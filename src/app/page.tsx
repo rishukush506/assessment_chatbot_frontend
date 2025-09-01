@@ -62,12 +62,17 @@ export default function Chat() {
   const [userId, setUserId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
 
+    
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
 
     // for database
     async function startSession() {
       try {
+        // # Production changes
         const res = await fetch(`${API_BASE}/start-session`, {
+        // const res = await fetch(`http://localhost:8000/start-session`, {
           method: "POST",
         });
         const data = await res.json();
@@ -110,7 +115,8 @@ export default function Chat() {
   // Controls whether user can continue chatting (disabled after assessment completion)
   const [shouldContinue, setShouldContinue] = useState(true);
   // Base URL for backend API from environment variable
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+
+
 
   /**
    * List of financial traits that the system can assess
@@ -203,6 +209,8 @@ export default function Chat() {
     setIsGeneratingPersona(true);
     try {
       // Call backend persona generation endpoint
+      // # Production changes
+      // const response = await fetch(`http://localhost:8000/persona`, {
       const response = await fetch(`${API_BASE}/persona`, {
         method: "POST",
         headers: {
@@ -266,6 +274,8 @@ export default function Chat() {
       // Send message to backend chat endpoint
       // console.log("userId")
       // console.log(userId)
+      // # Production changes
+      // const response = await fetch(`http://localhost:8000/chat`, {
       const response = await fetch(`${API_BASE}/chat`, {
         method: "POST",
         headers: {
@@ -533,10 +543,11 @@ export default function Chat() {
                   )}
                 </div>
 
+
                 {/* Show trait assessments after user messages */}
                 {message.type === "user" &&
                   messageTraitAssessments.length > 0 && (
-                    <div className="space-y-3">
+                    <div className="space-y-3" style={{display:"none"}}>
                       {messageTraitAssessments.map((trait, traitIndex) => (
                         <div
                           key={`${message.id}-assessment-${traitIndex}`}
