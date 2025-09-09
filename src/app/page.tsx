@@ -62,17 +62,16 @@ export default function Chat() {
   const [userId, setUserId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
 
-    
+    // Production changes
   const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+  // const API_BASE=  "http://localhost:8000"
 
   useEffect(() => {
 
     // for database
     async function startSession() {
       try {
-        // # Production changes
         const res = await fetch(`${API_BASE}/start-session`, {
-        // const res = await fetch(`http://localhost:8000/start-session`, {
           method: "POST",
         });
         const data = await res.json();
@@ -210,8 +209,6 @@ export default function Chat() {
     setIsGeneratingPersona(true);
     try {
       // Call backend persona generation endpoint
-      // # Production changes
-      // const response = await fetch(`http://localhost:8000/persona`, {
       const response = await fetch(`${API_BASE}/persona`, {
         method: "POST",
         headers: {
@@ -281,8 +278,6 @@ export default function Chat() {
       // Send message to backend chat endpoint
       // console.log("userId")
       // console.log(userId)
-      // # Production changes
-      // const response = await fetch(`http://localhost:8000/chat`, {
       const response = await fetch(`${API_BASE}/chat`, {
         method: "POST",
         headers: {
