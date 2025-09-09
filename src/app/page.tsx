@@ -100,6 +100,7 @@ export default function Chat() {
 
   // Generated persona data from backend
   const [personaData, setPersonaData] = useState<string>("");
+  // const [personaLabel, setPersonaLabel] = useState<string>("");
 
   // Loading state for persona generation
   const [isGeneratingPersona, setIsGeneratingPersona] = useState(false);
@@ -230,8 +231,14 @@ export default function Chat() {
       const data = await response.json();
       console.log("Persona response:", data);
 
-      // Set the generated persona data and show popup
+      // Set the generated persona data and  show popup
       setPersonaData(data.response);
+
+      // if (data.persona_label!="Not Assessed"){
+      //     setPersonaLabel(data.persona_label)
+      //     console.log("persona label in frontend:")
+      // }
+
       setIsTerminated(true);
       setShowPersonaPopup(true);
     } catch (error) {
@@ -733,6 +740,15 @@ export default function Chat() {
                   Financial Persona
                 </h2>
               </div>
+              {/* Displaying Persona Label */}
+              {/* {personaLabel && (
+                  <div className="flex items-center space-x-2">
+                    <UserCircle className="w-6 h-6 text-purple-400" />
+                    <h2 className="text-xl font-semibold text-white">
+                      Persona Label: {personaLabel}
+                    </h2>
+                  </div>
+                )} */}
               <Button
                 onClick={() => setShowPersonaPopup(false)}
                 variant="ghost"
