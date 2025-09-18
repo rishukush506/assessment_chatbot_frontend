@@ -421,17 +421,13 @@ export default function Chat() {
   const latestScores = getLatestTraitScores();
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white relative">
-      <div className="max-w-4xl mx-auto flex flex-col h-screen">
+    <div className="min-h-screen bg-gray-900 text-white relative ">
+      <div className="max-w-6xl p-1 mx-auto flex flex-col h-screen">
+
+        <div className="overflow-y-auto">
         {/* Header Section */}
         <div className="border-b border-gray-700 p-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Brain className="w-6 h-6 text-blue-400" />
-              <h1 className="text-xl font-semibold">
-                Financial Assessment Chat. 
-              </h1>
-            </div>
             
             {/* Show assessment progress indicator */}
             {latestScores.length > 0 && (
@@ -443,13 +439,47 @@ export default function Chat() {
               </div>
             )}
           </div>
+
+
+        <div className="bg-gray-900 text-white p-4 rounded-md shadow-md space-y-4 border border-gray-700 max-w-6xl mx-auto w-full">
+          {/* Header */}
           <div className="flex items-center space-x-2">
-            <p style={{fontSize:"13px"}}>
-              After your traits get assessed you can generate your persona and end the conversation.
-              <br></br>
-              If somewhere in between you wish to not continue you can either write "end" or "quit" to terminate. 
-          </p>
+            <span className="text-blue-400 text-xl">🧠</span>
+            <h1 className="text-lg font-semibold">
+              Welcome! Thanks for your consent to be a part of this study.
+            </h1>
           </div>
+
+          {/* Intro */}
+          <p className="text-gray-300 text-s leading-snug">
+            We have designed this chatbot to engage with you through a few quick interactions
+            to explore your money use, preferences, and decision styles. While you enjoy this chat,
+            you’ll discover your{" "}
+            <span className="font-semibold text-blue-400">financial persona</span> towards the end.
+            <br />
+            <span className="font-medium text-blue-500">
+              We also request you to fill in a small feedback form at the end of the conversation 
+              to support further efforts in the study. Thank You.
+            </span>
+          </p>
+
+          {/* Instructions */}
+          <div className="bg-gray-800 p-3 rounded border border-gray-700">
+            <h2 className="text-s font-semibold text-red-400 flex items-center mb-1">
+              📌 Instructions
+            </h2>
+            <p className="text-gray-300 text-xs leading-snug">
+              After your traits get assessed, you can generate your persona and end the conversation.
+              <br />
+              If at any point you wish to not continue, simply type{" "}
+              <span className="font-medium text-red-400">"end"</span> or{" "}
+              <span className="font-medium text-red-400">"quit"</span> to terminate.
+            </p>
+          </div>
+        </div>
+
+
+
         </div>
 
         {/* Trait Scores Display Section */}
@@ -476,7 +506,7 @@ export default function Chat() {
         )}
 
         {/* Messages Section */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 p-4 space-y-4">
           {/* Welcome message when no messages exist */}
           {chatState.messages.length === 0 && (
             <div className="text-center text-gray-400 mt-8">
@@ -678,6 +708,8 @@ export default function Chat() {
               </Card>
             </div>
           )}
+        </div>
+
         </div>
 
           {/* Input Section */}
