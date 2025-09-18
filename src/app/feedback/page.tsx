@@ -36,8 +36,13 @@ const domainQuestions = [
   "Any other ideas or reflections from your experience? Please specify",
 ];
 
-const options = ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"];
-
+const options = [
+  "Strongly Disagree",
+  "Disagree",
+  "Neutral",
+  "Agree",
+  "Strongly Agree",
+];
 
 export default function FeedbackForm() {
   return (
@@ -47,45 +52,42 @@ export default function FeedbackForm() {
   );
 }
 
-
 function FeedbackFormWrapper() {
-    const [formData, setFormData] = useState<{ [key: string]: string }>({});
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(false);
-    const [timestamp, setTimestamp] = useState("");
+  const [formData, setFormData] = useState<{ [key: string]: string }>({});
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [timestamp, setTimestamp] = useState("");
 
-    const searchParams = useSearchParams();
-    const userId = searchParams.get("user_id");
-    const sessionId = searchParams.get("session_id");
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("user_id");
+  const sessionId = searchParams.get("session_id");
 
-    console.log("User ID:", userId);
-    console.log("Session ID:", sessionId);
+  console.log("User ID:", userId);
+  console.log("Session ID:", sessionId);
 
-    const handleChange = (question: string, value: string) => {
-        setFormData((prev) => ({
-        ...prev,
-        [question]: value,
-        }));
-    };
+  const handleChange = (question: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [question]: value,
+    }));
+  };
 
-    const istTimestamp = new Date().toLocaleString("en-IN", {
-        timeZone: "Asia/Kolkata",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-    });
+  const istTimestamp = new Date().toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
 
-    
-
-    // console.log("IST Timestamp:", istTimestamp);
+  // console.log("IST Timestamp:", istTimestamp);
 
   // Production changes
   const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-//   const API_BASE=  "http://localhost:8000"
+  //   const API_BASE=  "http://localhost:8000"
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,10 +99,10 @@ function FeedbackFormWrapper() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-            responses: formData,
-            user_id: userId, 
-            session_id: sessionId
+        body: JSON.stringify({
+          responses: formData,
+          user_id: userId,
+          session_id: sessionId,
         }),
       });
       console.log("Response:", res);
@@ -120,7 +122,6 @@ function FeedbackFormWrapper() {
     } finally {
       setLoading(false);
     }
-    
 
     // 🔹 You can send this to FastAPI with fetch/axios
   };
@@ -131,20 +132,23 @@ function FeedbackFormWrapper() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-gray-100 p-6">
-        <div className="max-w-3xl w-full bg-gray-800 rounded-2xl shadow-lg p-8">
+      <div className="max-w-3xl w-full bg-gray-800 rounded-2xl shadow-lg p-8">
         <h1 className="text-2xl font-bold mb-6 text-center">Feedback Form</h1>
         <form onSubmit={handleSubmit} className="space-y-8">
-            
-            {/* Chatbot Usability Section */}
-            <div>
-            <h2 className="text-xl font-semibold mb-8">Chatbot Usability Questions</h2>
+          {/* Chatbot Usability Section */}
+          <div>
+            <h2 className="text-xl font-semibold mb-8">
+              Chatbot Usability Questions
+            </h2>
             {chatbotQuestions.map((q, idx) => (
-                <div key={idx} className="mb-8">
-                <p className="mb-2 font-medium">{idx + 1}. {q}</p>
+              <div key={idx} className="mb-8">
+                <p className="mb-2 font-medium">
+                  {idx + 1}. {q}
+                </p>
                 <div className="flex space-x-6">
-                    {options.map((opt) => (
+                  {options.map((opt) => (
                     <label key={opt} className="flex items-center space-x-2">
-                        <input
+                      <input
                         type="radio"
                         name={q}
                         value={opt}
@@ -153,84 +157,89 @@ function FeedbackFormWrapper() {
                         className="form-radio text-blue-600"
                         // Production changes
                         required
-                        />
-                        <span>{opt}</span>
+                      />
+                      <span>{opt}</span>
                     </label>
-                    ))}
+                  ))}
                 </div>
-                </div>
+              </div>
             ))}
-            </div>
+          </div>
 
-            {/* Domain Related Section */}
-            <div>
-            <h2 className="text-xl font-semibold mb-8">Domain Related Questions</h2>
+          {/* Domain Related Section */}
+          <div>
+            <h2 className="text-xl font-semibold mb-8">
+              Domain Related Questions
+            </h2>
             {domainQuestions.map((q, idx) => (
-                <div key={idx} className="mb-8">
+              <div key={idx} className="mb-8">
                 <p className="mb-2 font-medium">
-                    {chatbotQuestions.length + idx + 1}. {q}
+                  {chatbotQuestions.length + idx + 1}. {q}
                 </p>
                 {q.startsWith("Any other ideas") ? (
-                    <textarea
+                  <textarea
                     className="w-full p-2 rounded-md bg-gray-800 border border-gray-600 text-white"
                     rows={3}
                     value={formData[q] || ""}
                     onChange={(e) => handleChange(q, e.target.value)}
                     placeholder="Write your response here..."
-                    />
+                  />
                 ) : (
-                    <div className="flex space-x-6">
+                  <div className="flex space-x-6">
                     {options.map((opt) => (
-                        <label key={opt} className="flex items-center space-x-2">
+                      <label key={opt} className="flex items-center space-x-2">
                         <input
-                            type="radio"
-                            name={q}
-                            value={opt}
-                            checked={formData[q] === opt}
-                            onChange={() => handleChange(q, opt)}
-                            className="form-radio text-blue-600"
-
-                            // Production changes
-                            required
+                          type="radio"
+                          name={q}
+                          value={opt}
+                          checked={formData[q] === opt}
+                          onChange={() => handleChange(q, opt)}
+                          className="form-radio text-blue-600"
+                          // Production changes
+                          required
                         />
                         <span>{opt}</span>
-                        </label>
+                      </label>
                     ))}
-                    </div>
+                  </div>
                 )}
-                </div>
+              </div>
             ))}
-            </div>
+          </div>
 
-            {/* Submit Button */}
-            <div className="flex justify-between mt-6">
-                <button
-                    type="button"
-                    onClick={handleClear}
-                    className="px-6 py-2 bg-gray-500 hover:bg-gray-600 rounded-lg text-white font-semibold transition"
-                >
-                    Clear Responses
-                </button>
+          {/* Submit Button */}
+          <div className="flex justify-between mt-6">
+            <button
+              type="button"
+              onClick={handleClear}
+              className="px-6 py-2 bg-gray-500 hover:bg-gray-600 rounded-lg text-white font-semibold transition"
+            >
+              Clear Responses
+            </button>
 
-                {/* Right side Submit Button */}
-                <button
-                    type="submit"
-                    className="px-6 py-2 bg-blue-700 hover:bg-blue-800 
+            {/* Right side Submit Button */}
+            <button
+              type="submit"
+              className="px-6 py-2 bg-blue-700 hover:bg-blue-800 
                                 rounded-lg text-white font-semibold transition
                                 disabled:bg-gray-500 disabled:cursor-not-allowed disabled:opacity-70"
-                    disabled={isSubmitted}
-                >
-                    {loading ? "Submitting..." : "Submit Feedback"}
-                </button>
-            </div>
+              disabled={isSubmitted}
+            >
+              {loading ? "Submitting..." : "Submit Feedback"}
+            </button>
+          </div>
         </form>
         {message && (
-            <div>
-            <p className="mt-4 text-center text-lg font-medium">{message} Submit Time: {timestamp}</p>
-            <p className="mt-4 text-center text-lg font-medium">🎉 Thank You for Trying our Chatbot!!</p>
-            </div>
+          <div>
+            <p className="mt-4 text-center text-lg font-medium">
+              {message} Submit Time: {timestamp}
+            </p>
+            <p className="mt-4 text-center text-lg font-medium">
+              🎉 Thank You for Trying our Chatbot!!
+            </p>
+          </div>
         )}
-        </div>
+      </div>
     </div>
   );
 }

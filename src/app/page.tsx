@@ -10,7 +10,7 @@ export default function ConsentPage() {
     e.preventDefault();
     if (consent) {
       router.push("/chatbot"); // go to chatbot page
-    } 
+    }
   };
 
   return (
@@ -32,7 +32,9 @@ export default function ConsentPage() {
           </p>
 
           <div>
-            <h2 className="text-lg font-semibold mb-2">Data Storage and Security:</h2>
+            <h2 className="text-lg font-semibold mb-2">
+              Data Storage and Security:
+            </h2>
             <ul className="list-disc list-inside space-y-1">
               <li>
                 <span className="font-semibold">Storage:</span> The data will be
@@ -56,10 +58,12 @@ export default function ConsentPage() {
             <h2 className="text-lg font-semibold mb-2">Your Rights:</h2>
             <ul className="list-disc list-inside space-y-1">
               <li>
-                <span className="font-semibold">Withdrawal of Consent:</span> You
-                have the right to withdraw your consent in the next 30 days from
-                collecting the data by mentioning your unique User ID which will be mentioned in the end after submitting feedback. If you
-                withdraw your consent, we will cease using your data and will delete it within 30 days.
+                <span className="font-semibold">Withdrawal of Consent:</span>{" "}
+                You have the right to withdraw your consent in the next 30 days
+                from collecting the data by mentioning your unique User ID which
+                will be mentioned in the end after submitting feedback. If you
+                withdraw your consent, we will cease using your data and will
+                delete it within 30 days.
               </li>
             </ul>
           </div>
@@ -74,9 +78,7 @@ export default function ConsentPage() {
               <span className="font-semibold">Name:</span> Mr. Rishabh Kushwah
               <br />
               <span className="font-semibold">Email:</span>{" "}
-              <a  
-                className="text-blue-400 hover:underline"
-              >
+              <a className="text-blue-400 hover:underline">
                 rishabh.kushwah@tcs.com
               </a>
             </p>
@@ -98,7 +100,11 @@ export default function ConsentPage() {
             type="submit"
             disabled={!consent}
             className={`w-full py-2 px-4 rounded-lg shadow-md font-semibold transition 
-              ${consent ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-600 cursor-not-allowed"}
+              ${
+                consent
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-gray-600 cursor-not-allowed"
+              }
             `}
           >
             Next → Chatbot

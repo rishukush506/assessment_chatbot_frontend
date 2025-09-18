@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState , useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -57,18 +57,16 @@ interface ChatState {
  * Provides a conversational interface to assess user's financial traits
  */
 
-
 export default function Chat() {
-  // User id for database 
+  // User id for database
   const [userId, setUserId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
 
-    // Production changes
+  // Production changes
   const API_BASE = process.env.NEXT_PUBLIC_API_URL;
   // const API_BASE=  "http://localhost:8000"
 
   useEffect(() => {
-
     // for database
     async function startSession() {
       try {
@@ -80,14 +78,12 @@ export default function Chat() {
 
         setUserId(data.user_id);
         setSessionId(data.session_id);
-
       } catch (err) {
         console.error("Failed to start session", err);
       }
     }
     startSession();
   }, []);
-
 
   // Input state for the message input field
   const [input, setInput] = useState("");
@@ -105,7 +101,7 @@ export default function Chat() {
   // Loading state for persona generation
   const [isGeneratingPersona, setIsGeneratingPersona] = useState(false);
 
-  const [isTerminated,setIsTerminated] = useState(false);
+  const [isTerminated, setIsTerminated] = useState(false);
 
   const router = useRouter();
 
@@ -118,8 +114,6 @@ export default function Chat() {
   // Controls whether user can continue chatting (disabled after assessment completion)
   const [shouldContinue, setShouldContinue] = useState(true);
   // Base URL for backend API from environment variable
-
-
 
   /**
    * List of financial traits that the system can assess
@@ -219,7 +213,7 @@ export default function Chat() {
         },
         body: JSON.stringify({
           state: chatState.backendState,
-          user_id:userId,
+          user_id: userId,
           session_id: sessionId,
         }),
       });
@@ -255,7 +249,6 @@ export default function Chat() {
    * @param e - Form submission event
    */
   const handleSubmit = async (e: React.FormEvent) => {
-
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
@@ -303,9 +296,9 @@ export default function Chat() {
 
       // // Terminating chat when user writes end
 
-      if(data.response=="terminate"){
-        console.log("chat terminated")
-        setIsTerminated(true)
+      if (data.response == "terminate") {
+        console.log("chat terminated");
+        setIsTerminated(true);
       }
 
       // Create AI response message
@@ -423,344 +416,353 @@ export default function Chat() {
   return (
     <div className="min-h-screen bg-gray-900 text-white relative ">
       <div className="max-w-6xl p-1 mx-auto flex flex-col h-screen">
+        <div className="flex-1 overflow-y-auto ">
+          {/* Header Section */}
+          <div className="border-b border-gray-700 p-4">
+            <div className="flex items-center justify-between">
+              {/* Show assessment progress indicator */}
+              {latestScores.length > 0 && (
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="w-4 h-4 text-green-400" />
+                  <span className="text-sm text-gray-400">
+                    {latestScores.length} traits assessed
+                  </span>
+                </div>
+              )}
+            </div>
 
-        <div className="overflow-y-auto">
-        {/* Header Section */}
-        <div className="border-b border-gray-700 p-4">
-          <div className="flex items-center justify-between">
-            
-            {/* Show assessment progress indicator */}
-            {latestScores.length > 0 && (
+            <div className="bg-gray-900 text-white p-4 rounded-md shadow-md space-y-4 border border-gray-700 max-w-6xl mx-auto w-full">
+              {/* Header */}
               <div className="flex items-center space-x-2">
-                <TrendingUp className="w-4 h-4 text-green-400" />
-                <span className="text-sm text-gray-400">
-                  {latestScores.length} traits assessed
+                <span className="text-blue-400 text-xl">🧠</span>
+                <h1 className="text-lg font-semibold">
+                  Welcome! Thanks for your consent to be a part of this study.
+                </h1>
+              </div>
+
+              {/* Intro */}
+              <p className="text-gray-300 text-s leading-snug">
+                We have designed this chatbot to engage with you through a few
+                quick interactions to explore your money use, preferences, and
+                decision styles. While you enjoy this chat, you’ll discover your{" "}
+                <span className="font-semibold text-blue-400">
+                  financial persona
+                </span>{" "}
+                towards the end.
+                <br />
+                <span className="font-medium text-blue-500">
+                  We also request you to fill in a small feedback form at the
+                  end of the conversation to support further efforts in the
+                  study. Thank You.
                 </span>
+              </p>
+
+              {/* Instructions */}
+              <div className="bg-gray-800 p-3 rounded border border-gray-700">
+                <h2 className="text-s font-semibold text-red-400 flex items-center mb-1">
+                  📌 Instructions
+                </h2>
+                <p className="text-gray-300 text-xs leading-snug">
+                  After your traits get assessed, you can generate your persona
+                  and end the conversation.
+                  <br />
+                  If at any point you wish to not continue, simply type{" "}
+                  <span className="font-medium text-red-400">
+                    "end"
+                  </span> or{" "}
+                  <span className="font-medium text-red-400">"quit"</span> to
+                  terminate.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Trait Scores Display Section */}
+          {latestScores.length > 0 && (
+            <div className="border-b border-gray-700 p-4">
+              <div className="flex flex-wrap gap-2">
+                {latestScores.map((trait, index) => (
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="bg-gray-800 text-gray-200 hover:bg-gray-700"
+                  >
+                    {getTraitDisplayName(trait.trait)}: {trait.score.toFixed(1)}
+                    /5
+                    {/* Show confidence level if available */}
+                    {trait.confidence && (
+                      <span className="ml-1 text-xs opacity-70">
+                        ({trait.confidence.toFixed(1)}/10)
+                      </span>
+                    )}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Messages Section */}
+          <div className="flex-1 p-4 space-y-4 pb-32">
+            {/* Welcome message when no messages exist */}
+            {chatState.messages.length === 0 && (
+              <div className="text-center text-gray-400 mt-8">
+                <Brain className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p className="text-lg mb-2">Welcome to Financial Assessment</p>
+                <p className="text-sm">
+                  Start a conversation to begin your financial trait assessment.
+                  You can start with a simple "Hi".
+                </p>
+              </div>
+            )}
+
+            {/* Render all chat messages */}
+            {chatState.messages.map((message, index) => {
+              // Get trait assessments that were added after this message
+              const messageTraitAssessments = chatState.traitData.filter(
+                (trait) => {
+                  // Show assessments that have data and were created after this message
+                  return (
+                    trait.timestamp &&
+                    trait.timestamp > message.timestamp &&
+                    (trait.sentence ||
+                      trait.score !== undefined ||
+                      trait.rationale) &&
+                    // Only show for the most recent user message or if this is not the last message
+                    message.type === "user" &&
+                    (index === chatState.messages.length - 2 || // Second to last (user message before AI response)
+                      index === chatState.messages.length - 1) // Or last message
+                  );
+                }
+              );
+
+              return (
+                <div key={message.id} className="space-y-4">
+                  {/* Regular message bubble */}
+                  <div
+                    className={`flex items-start space-x-3 ${
+                      message.type === "user" ? "justify-end" : ""
+                    }`}
+                  >
+                    {/* AI avatar */}
+                    {message.type === "ai" && (
+                      <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
+                        <Bot className="w-4 h-4" />
+                      </div>
+                    )}
+
+                    {/* Message content */}
+                    <div
+                      className={`max-w-3xl ${
+                        message.type === "user" ? "order-first" : ""
+                      }`}
+                    >
+                      <Card
+                        className={`p-4 ${
+                          message.type === "user"
+                            ? "bg-blue-600 text-white ml-auto"
+                            : "bg-gray-800 text-gray-100"
+                        }`}
+                      >
+                        <p className="whitespace-pre-wrap">{message.content}</p>
+                      </Card>
+                    </div>
+
+                    {/* User avatar */}
+                    {message.type === "user" && (
+                      <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center flex-shrink-0">
+                        <User className="w-4 h-4" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Show trait assessments after user messages */}
+                  {message.type === "user" &&
+                    messageTraitAssessments.length > 0 && (
+                      <div className="space-y-3" style={{ display: "none" }}>
+                        {messageTraitAssessments.map((trait, traitIndex) => (
+                          <div
+                            key={`${message.id}-assessment-${traitIndex}`}
+                            className="flex items-start space-x-3"
+                          >
+                            {/* Assessment avatar */}
+                            <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center flex-shrink-0">
+                              <Brain className="w-4 h-4" />
+                            </div>
+
+                            {/* Assessment content */}
+                            <div className="max-w-3xl">
+                              <Card className="bg-green-900/20 border-green-700/50 text-gray-100 p-4">
+                                <div className="space-y-3">
+                                  {/* Header with trait name and scores */}
+                                  <div className="flex items-center justify-between">
+                                    <Badge
+                                      variant="outline"
+                                      className="border-green-600 text-green-300"
+                                    >
+                                      {getTraitDisplayName(trait.trait)}{" "}
+                                      Assessment
+                                    </Badge>
+                                    <div className="flex space-x-2">
+                                      {/* Show score if available */}
+                                      {trait.score !== undefined && (
+                                        <Badge
+                                          variant="secondary"
+                                          className="bg-green-800 text-green-200"
+                                        >
+                                          Score: {trait.score}/5
+                                        </Badge>
+                                      )}
+                                      {/* Show confidence if available */}
+                                      {trait.confidence !== undefined && (
+                                        <Badge
+                                          variant="secondary"
+                                          className="bg-green-800 text-green-200"
+                                        >
+                                          Confidence: {trait.confidence}/10
+                                        </Badge>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* Assessment content */}
+                                  <div className="space-y-2">
+                                    {/* Assessment description */}
+                                    {trait.sentence && (
+                                      <div>
+                                        <p className="text-xs text-green-400 font-medium mb-1">
+                                          Assessment:
+                                        </p>
+                                        <p className="text-sm text-green-200">
+                                          {trait.sentence}
+                                        </p>
+                                      </div>
+                                    )}
+
+                                    {/* Assessment rationale */}
+                                    {trait.rationale && (
+                                      <div>
+                                        <p className="text-xs text-green-400 font-medium mb-1">
+                                          Rationale:
+                                        </p>
+                                        <p className="text-xs text-green-300 italic">
+                                          {trait.rationale}
+                                        </p>
+                                      </div>
+                                    )}
+
+                                    {/* Current priority and iteration info */}
+                                    <div className="pt-2 border-t border-green-700/30">
+                                      <p className="text-xs text-green-400">
+                                        Current Priority:{" "}
+                                        <span className="text-green-300">
+                                          {chatState.currentPriority
+                                            ? getTraitDisplayName(
+                                                chatState.currentPriority
+                                              )
+                                            : "N/A"}
+                                        </span>
+                                        {chatState.currentIteration !==
+                                          undefined && (
+                                          <span className="ml-2">
+                                            • Iteration:{" "}
+                                            {chatState.currentIteration}
+                                          </span>
+                                        )}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </Card>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                </div>
+              );
+            })}
+
+            {/* Loading indicator */}
+            {isLoading && (
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
+                  <Bot className="w-4 h-4" />
+                </div>
+                <Card className="bg-gray-800 text-gray-100 p-4">
+                  <div className="flex space-x-1">
+                    {/* Animated dots for loading */}
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div
+                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "0.1s" }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "0.2s" }}
+                    ></div>
+                  </div>
+                </Card>
               </div>
             )}
           </div>
-
-
-        <div className="bg-gray-900 text-white p-4 rounded-md shadow-md space-y-4 border border-gray-700 max-w-6xl mx-auto w-full">
-          {/* Header */}
-          <div className="flex items-center space-x-2">
-            <span className="text-blue-400 text-xl">🧠</span>
-            <h1 className="text-lg font-semibold">
-              Welcome! Thanks for your consent to be a part of this study.
-            </h1>
-          </div>
-
-          {/* Intro */}
-          <p className="text-gray-300 text-s leading-snug">
-            We have designed this chatbot to engage with you through a few quick interactions
-            to explore your money use, preferences, and decision styles. While you enjoy this chat,
-            you’ll discover your{" "}
-            <span className="font-semibold text-blue-400">financial persona</span> towards the end.
-            <br />
-            <span className="font-medium text-blue-500">
-              We also request you to fill in a small feedback form at the end of the conversation 
-              to support further efforts in the study. Thank You.
-            </span>
-          </p>
-
-          {/* Instructions */}
-          <div className="bg-gray-800 p-3 rounded border border-gray-700">
-            <h2 className="text-s font-semibold text-red-400 flex items-center mb-1">
-              📌 Instructions
-            </h2>
-            <p className="text-gray-300 text-xs leading-snug">
-              After your traits get assessed, you can generate your persona and end the conversation.
-              <br />
-              If at any point you wish to not continue, simply type{" "}
-              <span className="font-medium text-red-400">"end"</span> or{" "}
-              <span className="font-medium text-red-400">"quit"</span> to terminate.
-            </p>
-          </div>
         </div>
 
-
-
-        </div>
-
-        {/* Trait Scores Display Section */}
-        {latestScores.length > 0 && (
-          <div className="border-b border-gray-700 p-4">
-            <div className="flex flex-wrap gap-2">
-              {latestScores.map((trait, index) => (
-                <Badge
-                  key={index}
-                  variant="secondary"
-                  className="bg-gray-800 text-gray-200 hover:bg-gray-700"
-                >
-                  {getTraitDisplayName(trait.trait)}: {trait.score.toFixed(1)}/5
-                  {/* Show confidence level if available */}
-                  {trait.confidence && (
-                    <span className="ml-1 text-xs opacity-70">
-                      ({trait.confidence.toFixed(1)}/10)
-                    </span>
-                  )}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Messages Section */}
-        <div className="flex-1 p-4 space-y-4">
-          {/* Welcome message when no messages exist */}
-          {chatState.messages.length === 0 && (
-            <div className="text-center text-gray-400 mt-8">
-              <Brain className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg mb-2">Welcome to Financial Assessment</p>
-              <p className="text-sm">
-                Start a conversation to begin your financial trait assessment. You can start with a simple "Hi".
-              </p>
-            </div>
-          )}
-
-          {/* Render all chat messages */}
-          {chatState.messages.map((message, index) => {
-            // Get trait assessments that were added after this message
-            const messageTraitAssessments = chatState.traitData.filter(
-              (trait) => {
-                // Show assessments that have data and were created after this message
-                return (
-                  trait.timestamp &&
-                  trait.timestamp > message.timestamp &&
-                  (trait.sentence ||
-                    trait.score !== undefined ||
-                    trait.rationale) &&
-                  // Only show for the most recent user message or if this is not the last message
-                  message.type === "user" &&
-                  (index === chatState.messages.length - 2 || // Second to last (user message before AI response)
-                    index === chatState.messages.length - 1) // Or last message
-                );
-              }
-            );
-
-            return (
-              <div key={message.id} className="space-y-4">
-                {/* Regular message bubble */}
-                <div
-                  className={`flex items-start space-x-3 ${
-                    message.type === "user" ? "justify-end" : ""
-                  }`}
-                >
-                  {/* AI avatar */}
-                  {message.type === "ai" && (
-                    <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
-                      <Bot className="w-4 h-4" />
-                    </div>
-                  )}
-
-                  {/* Message content */}
-                  <div
-                    className={`max-w-3xl ${
-                      message.type === "user" ? "order-first" : ""
-                    }`}
-                  >
-                    <Card
-                      className={`p-4 ${
-                        message.type === "user"
-                          ? "bg-blue-600 text-white ml-auto"
-                          : "bg-gray-800 text-gray-100"
-                      }`}
-                    >
-                      <p className="whitespace-pre-wrap">{message.content}</p>
-                    </Card>
-                  </div>
-
-                  {/* User avatar */}
-                  {message.type === "user" && (
-                    <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center flex-shrink-0">
-                      <User className="w-4 h-4" />
-                    </div>
-                  )}
-                </div>
-
-
-                {/* Show trait assessments after user messages */}
-                {message.type === "user" &&
-                  messageTraitAssessments.length > 0 && (
-                    <div className="space-y-3" style={{display:"none"}}>
-                      {messageTraitAssessments.map((trait, traitIndex) => (
-                        <div
-                          key={`${message.id}-assessment-${traitIndex}`}
-                          className="flex items-start space-x-3"
-                        >
-                          {/* Assessment avatar */}
-                          <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center flex-shrink-0">
-                            <Brain className="w-4 h-4" />
-                          </div>
-
-                          {/* Assessment content */}
-                          <div className="max-w-3xl">
-                            <Card className="bg-green-900/20 border-green-700/50 text-gray-100 p-4">
-                              <div className="space-y-3">
-                                {/* Header with trait name and scores */}
-                                <div className="flex items-center justify-between">
-                                  <Badge
-                                    variant="outline"
-                                    className="border-green-600 text-green-300"
-                                  >
-                                    {getTraitDisplayName(trait.trait)}{" "}
-                                    Assessment
-                                  </Badge>
-                                  <div className="flex space-x-2">
-                                    {/* Show score if available */}
-                                    {trait.score !== undefined && (
-                                      <Badge
-                                        variant="secondary"
-                                        className="bg-green-800 text-green-200"
-                                      >
-                                        Score: {trait.score}/5
-                                      </Badge>
-                                    )}
-                                    {/* Show confidence if available */}
-                                    {trait.confidence !== undefined && (
-                                      <Badge
-                                        variant="secondary"
-                                        className="bg-green-800 text-green-200"
-                                      >
-                                        Confidence: {trait.confidence}/10
-                                      </Badge>
-                                    )}
-                                  </div>
-                                </div>
-
-                                {/* Assessment content */}
-                                <div className="space-y-2">
-                                  {/* Assessment description */}
-                                  {trait.sentence && (
-                                    <div>
-                                      <p className="text-xs text-green-400 font-medium mb-1">
-                                        Assessment:
-                                      </p>
-                                      <p className="text-sm text-green-200">
-                                        {trait.sentence}
-                                      </p>
-                                    </div>
-                                  )}
-
-                                  {/* Assessment rationale */}
-                                  {trait.rationale && (
-                                    <div>
-                                      <p className="text-xs text-green-400 font-medium mb-1">
-                                        Rationale:
-                                      </p>
-                                      <p className="text-xs text-green-300 italic">
-                                        {trait.rationale}
-                                      </p>
-                                    </div>
-                                  )}
-
-                                  {/* Current priority and iteration info */}
-                                  <div className="pt-2 border-t border-green-700/30">
-                                    <p className="text-xs text-green-400">
-                                      Current Priority:{" "}
-                                      <span className="text-green-300">
-                                        {chatState.currentPriority
-                                          ? getTraitDisplayName(
-                                              chatState.currentPriority
-                                            )
-                                          : "N/A"}
-                                      </span>
-                                      {chatState.currentIteration !==
-                                        undefined && (
-                                        <span className="ml-2">
-                                          • Iteration:{" "}
-                                          {chatState.currentIteration}
-                                        </span>
-                                      )}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </Card>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-              </div>
-            );
-          })}
-
-          {/* Loading indicator */}
-          {isLoading && (
-            <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
-                <Bot className="w-4 h-4" />
-              </div>
-              <Card className="bg-gray-800 text-gray-100 p-4">
-                <div className="flex space-x-1">
-                  {/* Animated dots for loading */}
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div
-                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                    style={{ animationDelay: "0.1s" }}
-                  ></div>
-                  <div
-                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                    style={{ animationDelay: "0.2s" }}
-                  ></div>
-                </div>
-              </Card>
-            </div>
-          )}
-        </div>
-
-        </div>
-
-          {/* Input Section */}
+        {/* Input Section */}
         {/* Input / Thank You Section */}
         <div className="border-t border-gray-700 p-4">
-        {!isTerminated ? (
-          <form onSubmit={handleSubmit} className="flex space-x-2">
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message..."
-              className="flex-1 bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
-              disabled={isLoading || !shouldContinue || isTerminated}
-            />
-            <Button
-              type="submit"
-              disabled={isLoading || !input.trim() || !shouldContinue}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              <Send className="w-4 h-4" />
-            </Button>
-            <button
-              type="button"
-              onClick={() => router.push(`/feedback?user_id=${userId}&session_id=${sessionId}`)}
-              disabled={!isTerminated}
-              className={`px-4 py-2 rounded-lg font-semibold transition ${
-                isTerminated
-                  ? "bg-blue-600 hover:bg-blue-700 text-white"
-                  : "bg-gray-500 text-gray-300 cursor-not-allowed"
-              }`}
-            >
-              Next →
-            </button>
-          </form>
-        ) : (
-          <div className="flex items-center justify-between">
-            <h1 className="text-lg font-semibold text-white">
-              🎉 Thank You for Trying our Chatbot!!
-            </h1>
-            <button
-              type="button"
-              onClick={() =>router.push(`/feedback?user_id=${userId}&session_id=${sessionId}`)}
-              className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition"
-            >
-              Next →
-            </button>
-          </div>
-        )}
+          {!isTerminated ? (
+            <form onSubmit={handleSubmit} className="flex space-x-2">
+              <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Type your message..."
+                className="flex-1 bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
+                disabled={isLoading || !shouldContinue || isTerminated}
+              />
+              <Button
+                type="submit"
+                disabled={isLoading || !input.trim() || !shouldContinue}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Send className="w-4 h-4" />
+              </Button>
+              <button
+                type="button"
+                onClick={() =>
+                  router.push(
+                    `/feedback?user_id=${userId}&session_id=${sessionId}`
+                  )
+                }
+                disabled={!isTerminated}
+                className={`px-4 py-2 rounded-lg font-semibold transition ${
+                  isTerminated
+                    ? "bg-blue-600 hover:bg-blue-700 text-white"
+                    : "bg-gray-500 text-gray-300 cursor-not-allowed"
+                }`}
+              >
+                Next →
+              </button>
+            </form>
+          ) : (
+            <div className="flex items-center justify-between">
+              <h1 className="text-lg font-semibold text-white">
+                🎉 Thank You for Trying our Chatbot!!
+              </h1>
+              <button
+                type="button"
+                onClick={() =>
+                  router.push(
+                    `/feedback?user_id=${userId}&session_id=${sessionId}`
+                  )
+                }
+                className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition"
+              >
+                Next →
+              </button>
+            </div>
+          )}
         </div>
       </div>
-
 
       {/* Floating Generate Persona Button */}
       {chatState.backendState && (
