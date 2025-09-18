@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-   import { useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 const chatbotQuestions = [
   "The chatbot’s personality was realistic and engaging",
@@ -37,8 +38,18 @@ const domainQuestions = [
 
 const options = ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"];
 
+
 export default function FeedbackForm() {
-  const [formData, setFormData] = useState<{ [key: string]: string }>({});
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <FeedbackFormWrapper />
+    </Suspense>
+  );
+}
+
+
+function FeedbackFormWrapper() {
+    const [formData, setFormData] = useState<{ [key: string]: string }>({});
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
