@@ -30,7 +30,7 @@ const domainQuestions = [
   "The questions asked during the conversation made me think and reflect about my financial awareness",
   "The questions asked were relevant in terms of how I think and deal with matters of money",
   "I thought that the questions were relatable to my context of financial decisions",
-  "The financial persona generated was accurate",
+  "The profile generated reflects my persona very well",
   "I agree with the list of strengths generated",
   "I agree to the points listed under 'opportunities to improve'",
   "Any other ideas or reflections from your experience? Please specify",
@@ -137,9 +137,9 @@ function FeedbackFormWrapper() {
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Chatbot Usability Section */}
           <div>
-            <h2 className="text-xl font-semibold mb-8">
+            {/* <h2 className="text-xl font-semibold mb-8">
               Chatbot Usability Questions
-            </h2>
+            </h2> */}
             {chatbotQuestions.map((q, idx) => (
               <div key={idx} className="mb-8">
                 <p className="mb-2 font-medium">
@@ -168,9 +168,9 @@ function FeedbackFormWrapper() {
 
           {/* Domain Related Section */}
           <div>
-            <h2 className="text-xl font-semibold mb-8">
+            {/* <h2 className="text-xl font-semibold mb-8">
               Domain Related Questions
-            </h2>
+            </h2> */}
             {domainQuestions.map((q, idx) => (
               <div key={idx} className="mb-8">
                 <p className="mb-2 font-medium">
