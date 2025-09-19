@@ -410,13 +410,24 @@ export default function Chat() {
     }
   };
 
+  useEffect(() => {
+    const container = document.getElementById("messages-container");
+    console.log("Messages container:", chatState.messages);
+    if (container) {
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: "smooth", // optional: smooth scrolling
+      });
+    }
+  }, [chatState.messages]);
+
   // Get the calculated trait scores for display
   const latestScores = getLatestTraitScores();
 
   return (
     <div className="min-h-screen bg-gray-900 text-white relative ">
       <div className="max-w-6xl p-1 mx-auto flex flex-col h-screen">
-        <div className="flex-1 overflow-y-auto ">
+        <div className="flex-1 overflow-y-auto " id="messages-container">
           {/* Header Section */}
           <div className="border-b border-gray-700 p-4">
             <div className="flex items-center justify-between">
