@@ -476,8 +476,12 @@ export default function Chat() {
                   📌 Instructions
                 </h2>
                 <p className="text-gray-300 text-xs leading-snug">
-                  After your traits get assessed, you can generate your persona
-                  and end the conversation.
+                  After your traits get assessed, you can click on{" "}
+                  <span className="font-medium text-red-400">
+                    "Generate Persona"
+                  </span>{" "}
+                  to end the conversation. Note that once you click on it, you
+                  can not continue to chat.
                   <br />
                   If at any point you wish to not continue, simply type{" "}
                   <span className="font-medium text-red-400">
@@ -485,6 +489,12 @@ export default function Chat() {
                   </span> or{" "}
                   <span className="font-medium text-red-400">"quit"</span> to
                   terminate.
+                  <br />
+                  If at any point chatbot displays error please{" "}
+                  <span className="font-medium text-red-400">
+                    enter your last input
+                  </span>{" "}
+                  again.
                 </p>
               </div>
             </div>
