@@ -297,6 +297,8 @@ export default function Chat() {
       // // Terminating chat when user writes end
 
       if (data.response == "terminate") {
+        data.response =
+          "We are ending the chat as per your request. Thank you for your time and participation in this study. Have a great day!";
         console.log("chat terminated");
         setIsTerminated(true);
       }
@@ -721,7 +723,7 @@ export default function Chat() {
         {/* Input Section */}
         {/* Input / Thank You Section */}
         <div className="border-t border-gray-700 p-4">
-          {!isTerminated ? (
+          {!isTerminated && shouldContinue ? (
             <form onSubmit={handleSubmit} className="flex space-x-2">
               <Input
                 value={input}
